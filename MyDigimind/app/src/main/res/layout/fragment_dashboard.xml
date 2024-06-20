@@ -203,7 +203,9 @@
                 android:text="@string/done"
                 android:textColor="@color/white"
                 android:layout_gravity="center"
-                android:layout_marginTop="30dp"/>
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="110dp"
+                />
 
         </LinearLayout>
         
