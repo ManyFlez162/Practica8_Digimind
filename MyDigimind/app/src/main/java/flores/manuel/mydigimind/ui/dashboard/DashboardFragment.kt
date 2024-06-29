@@ -36,6 +36,7 @@ class DashboardFragment : Fragment() {
         val dashboardViewModel =
             ViewModelProvider(this).get(DashboardViewModel::class.java)
 
+        // Probando repositorio para nueva rama
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
