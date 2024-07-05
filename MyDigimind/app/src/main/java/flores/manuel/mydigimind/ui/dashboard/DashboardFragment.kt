@@ -13,6 +13,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.google.firebase.firestore.FirebaseFirestore
 import flores.manuel.mydigimind.R
 import flores.manuel.mydigimind.databinding.FragmentDashboardBinding
 import flores.manuel.mydigimind.ui.Task
@@ -23,6 +24,8 @@ import java.text.SimpleDateFormat
 class DashboardFragment : Fragment() {
 
     private var _binding: FragmentDashboardBinding? = null
+    private val database = FirebaseFirestore.getInstance()
+    private val collection = database.collection("actividades")
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -61,31 +64,65 @@ class DashboardFragment : Fragment() {
         val et_titulo: EditText = root.findViewById(R.id.name)
         val tiempo: EditText = root.findViewById(R.id.time)
         val checkMonday: CheckBox = root.findViewById(R.id.monday)
-        val checkTuesday: CheckBox = root.findViewById(R.id.monday)
-        val checkWednesday: CheckBox = root.findViewById(R.id.monday)
-        val checkThursday: CheckBox = root.findViewById(R.id.monday)
-        val checkFriday: CheckBox = root.findViewById(R.id.monday)
-        val checkSaturday: CheckBox = root.findViewById(R.id.monday)
+        val checkTuesday: CheckBox = root.findViewById(R.id.tuesday)
+        val checkWednesday: CheckBox = root.findViewById(R.id.wednesday)
+        val checkThursday: CheckBox = root.findViewById(R.id.thursday)
+        val checkFriday: CheckBox = root.findViewById(R.id.friday)
+        val checkSaturday: CheckBox = root.findViewById(R.id.saturday)
         val checkSunday: CheckBox = root.findViewById(R.id.sunday)
 
         btn_save.setOnClickListener {
             var days = ArrayList<String>()
             var title = et_titulo.text.toString()
             var time = tiempo.text.toString()
+            var lu: Boolean = false
+            var ma: Boolean = false
+            var mi: Boolean = false
+            var ju: Boolean = false
+            var vi: Boolean = false
+            var sa: Boolean = false
+            var dom: Boolean = false
 
-            if(checkMonday.isChecked) days.add("Monday")
-            if(checkTuesday.isChecked) days.add("Tuesday")
-            if(checkWednesday.isChecked) days.add("Wednesday")
-            if(checkThursday.isChecked) days.add("Thursday")
-            if(checkFriday.isChecked) days.add("Friday")
-            if(checkSaturday.isChecked) days.add("Saturday")
-            if(checkSunday.isChecked) days.add("Sunday")
+            if(checkMonday.isChecked){
+                days.add("Monday")
+                lu = true
+            }
+            if(checkTuesday.isChecked){
+                days.add("Tuesday")
+                ma = true
+            }
+            if(checkWednesday.isChecked){
+                days.add("Wednesday")
+                mi = true
+            }
+            if(checkThursday.isChecked){
+                days.add("Thursday")
+                ju = true
+            }
+            if(checkFriday.isChecked){
+                days.add("Friday")
+                vi = true
+            }
+            if(checkSaturday.isChecked){
+                days.add("Saturday")
+                sa = true
+            }
+            if(checkSunday.isChecked){
+                days.add("Sunday")
+                dom = true
+            }
 
-            var task = Task(title, days, time)
+            var task = Task(title, days, time, lu, ma, mi, ju, vi, sa, dom)
 
             HomeFragment.tasks.add(task)
 
-            Toast.makeText(root.context, "new task addes", Toast.LENGTH_SHORT).show()
+            collection.add(task).addOnSuccessListener { documentReference ->
+                Toast.makeText(root.context, "se agregó a la base de datos", Toast.LENGTH_SHORT).show()
+            }.addOnFailureListener { e ->
+                Toast.makeText(root.context, "no se agregó a la base", Toast.LENGTH_SHORT).show()
+            }
+
+            Toast.makeText(root.context, "new task added", Toast.LENGTH_SHORT).show()
         }
 
         return root
